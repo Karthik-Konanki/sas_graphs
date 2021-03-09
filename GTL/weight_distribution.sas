@@ -1,0 +1,25 @@
+proc template;
+define statgraph Graph;
+dynamic _WEIGHT _SEX _WEIGHT2;
+begingraph;
+   layout lattice / rowdatarange=data columndatarange=data columns=2 rowgutter=10 columngutter=10 columnweights=(1.151526396020539 0.85);
+      layout overlay;
+         histogram _WEIGHT / name='histogram' binaxis=false;
+         densityplot _WEIGHT / name='normal' normal();
+         entry halign=center 'Weight Distribution' / valign=top location=outside;
+         densityplot _WEIGHT / name='kernel' kernel() lineattrs=(color=CXA52829 pattern=SHORTDASH );
+      endlayout;
+      layout overlay / xaxisopts=( discreteopts=( tickvaluefitpolicy=splitrotate));
+         boxplot x=_SEX y=_WEIGHT2 / name='box' groupdisplay=Cluster clusterwidth=1.0;
+      endlayout;
+      sidebar / align=bottom spacefill=false;
+         discretelegend 'normal' 'kernel' / opaque=true border=true halign=center valign=center displayclipped=true order=rowmajor;
+      endsidebar;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=SASHELP.HEART template=Graph;
+dynamic _WEIGHT="WEIGHT" _SEX="SEX" _WEIGHT2="WEIGHT";
+run;
